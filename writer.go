@@ -33,14 +33,14 @@ func (obj *NvrWriter) NewFile(Path string) {
 }
 
 //write one frame to file
-func (obj *NvrWriter) WriteH264(Data []byte) {
+func (obj *NvrWriter) WriteH264(frame_t int64, frame_k int64, Data []byte) {
 	start := obj.CurPos
 	obj.File.Seek(obj.CurPos, 0)
 	obj.File.Write([]byte("\000\000\000" + "\r\n"))
 	obj.File.Write(Data)
 	end, _ := obj.File.Seek(0, 1)
 	obj.CurPos = end
-	obj.Meta[strconv.FormatInt(time.Now().UnixNano(), 10)] = map[string]int64{"start": start, "end": end, "type": 1}
+	obj.Meta[strconv.FormatInt(time.Now().UnixNano(), 10)] = map[string]int64{"start": start, "end": end, "frame_t": frame_t, "frame_k": frame_k}
 	obj.WriteMeta()
 }
 

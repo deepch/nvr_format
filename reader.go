@@ -43,8 +43,8 @@ func (obj *NvrReader) ReadMeta() {
 	obj.Meta = y
 }
 
-func (obj *NvrReader) ReadTime(start, end int64) map[int64]map[string][]byte {
-	y := make(map[int64]map[string][]byte)
+func (obj *NvrReader) ReadTime(start, end int64) map[string]map[string][]byte {
+	y := make(map[string]map[string][]byte)
 	for k, v := range obj.Meta {
 		i, _ := strconv.ParseInt(k, 10, 64)
 		if i >= start && i <= end {
@@ -52,11 +52,13 @@ func (obj *NvrReader) ReadTime(start, end int64) map[int64]map[string][]byte {
 			header := make([]byte, diff)
 			obj.File.Seek(v["start"], 0)
 			obj.File.Read(header)
-			y[i] = make(map[string][]byte)
-			y[i]["payload"] = header[5:]
-			y[i]["type"] = []byte(string(v["type"]))
+			y[k] = make(map[string][]byte)
+			y[k]["payload"] = header[5:]
+			y[k]["frame_t"] = []byte(string(v["frame_t"]))
+			y[k]["frame_k"] = []byte(string(v["frame_k"]))
 		}
 	}
+
 	return y
 }
 
