@@ -26,7 +26,7 @@ func NewReader() (obj *NvrReader, err error) {
 func (obj *NvrReader) OpenFile(Path string) {
 	File, err := os.Open(Path)
 	if err != nil {
-		return
+		panic("not file")
 	}
 	obj.File = File
 	obj.ReadMeta()
@@ -48,14 +48,14 @@ func (obj *NvrReader) ReadTime(start, end int64) map[string]map[string][]byte {
 	for k, v := range obj.Meta {
 		i, _ := strconv.ParseInt(k, 10, 64)
 		if i >= start && i <= end {
-			diff := v["end"] - v["start"]
+			diff := v["e"] - v["s"]
 			header := make([]byte, diff)
-			obj.File.Seek(v["start"], 0)
+			obj.File.Seek(v["s"], 0)
 			obj.File.Read(header)
 			y[k] = make(map[string][]byte)
-			y[k]["payload"] = header[5:]
-			y[k]["frame_t"] = []byte(string(v["frame_t"]))
-			y[k]["frame_k"] = []byte(string(v["frame_k"]))
+			y[k]["payload"] = header
+			y[k]["t"] = []byte(string(v["t"]))
+			y[k]["k"] = []byte(string(v["k"]))
 		}
 	}
 
